@@ -20,7 +20,6 @@ public class AppController {
     @Autowired
     private GitHubService gitHubService;
 
-    // Unified dashboard view
     @GetMapping("/dashboard")
     public String dashboard(Model model) {
         List<User> users = userRepository.findAll();
@@ -28,26 +27,23 @@ public class AppController {
 
         model.addAttribute("users", users);
         model.addAttribute("repos", repos);
-        model.addAttribute("user", new User()); // for add form
+        model.addAttribute("user", new User());
 
-        return "dashboard"; // single HTML file
+        return "dashboard";
     }
 
-    // Add user from dashboard form
     @PostMapping("/add")
     public String addUser(@ModelAttribute User user) {
         userRepository.save(user);
-        return "redirect:/dashboard"; // context path auto-prepends /webapp
+        return "redirect:/dashboard"; // ✅ fixed redirect
     }
 
-    // GitHub repo details (JSON for inline table rendering)
     @ResponseBody
     @GetMapping("/github/repo/details/{repoName}")
     public GitHubRepo getRepoDetails(@PathVariable String repoName) {
         return gitHubService.getRepoByName(repoName);
     }
 
-    // Health check
     @ResponseBody
     @GetMapping("/ping")
     public String ping() {
