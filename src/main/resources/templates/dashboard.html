@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Unified Dashboard</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        section { margin-bottom: 40px; }
+        h2 { border-bottom: 1px solid #ccc; padding-bottom: 5px; }
+        ul { list-style-type: none; padding: 0; }
+        li { margin: 5px 0; }
+        form { margin-bottom: 20px; }
+        input { padding: 5px; margin-right: 10px; }
+        button { padding: 5px 10px; }
+    </style>
+</head>
+<body>
+    <h1>Unified Dashboard</h1>
+
+    <!-- User Section -->
+    <section>
+        <h2>Users</h2>
+        <form th:action="@{/webapp/add}" method="post">
+            <input type="text" name="name" placeholder="Enter user name"/>
+            <button type="submit">Add User</button>
+        </form>
+
+        <ul>
+            <li th:each="user : ${users}" th:text="${user.name}"></li>
+        </ul>
+    </section>
+
+    <!-- GitHub Section -->
+    <section>
+        <h2>GitHub Repositories</h2>
+        <ul>
+            <li th:each="repo : ${repos}">
+                <span th:text="${repo.name}"></span>
+                <a th:href="@{/webapp/github/repo/{name}(name=${repo.name})}">View JSON</a>
+            </li>
+        </ul>
+    </section>
+</body>
+</html>
