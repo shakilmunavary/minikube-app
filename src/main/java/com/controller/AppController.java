@@ -23,9 +23,13 @@ public class AppController {
     // Unified dashboard view
     @GetMapping("/dashboard")
     public String dashboard(Model model) {
-        model.addAttribute("users", userRepository.findAll());
-        model.addAttribute("repos", gitHubService.getUserRepos());
+        List<User> users = userRepository.findAll();
+        List<GitHubRepo> repos = gitHubService.getUserRepos();
+
+        model.addAttribute("users", users);
+        model.addAttribute("repos", repos);
         model.addAttribute("user", new User()); // for add form
+
         return "dashboard"; // single HTML file
     }
 
@@ -36,19 +40,10 @@ public class AppController {
         return "redirect:/webapp/dashboard"; // redirect back to unified view
     }
 
-    // GitHub repo details (HTML view)
-    @GetMapping("/github/repo/view/{repoName}")
-    public String showRepoHtml(@PathVariable("repoName") String repoName, Model model) {
-        GitHubRepo repo = gitHubService.getRepoByName(repoName);
-        model.addAttribute("repo", repo);
-        model.addAttribute("repoName", repoName);
-        return "github-repo-view"; // separate detail page
-    }
-
-    // GitHub repo details (JSON)
+    // GitHub repo details (JSON for inline table rendering)
     @ResponseBody
-    @GetMapping("/github/repo/{repoName}")
-    public GitHubRepo getRepo(@PathVariable String repoName) {
+    @GetMapping("/github/repo/details/{repoName}")
+    public GitHubRepo getRepoDetails(@PathVariable String repoName) {
         return gitHubService.getRepoByName(repoName);
     }
 
