@@ -12,6 +12,7 @@ spec:
       labels:
         app: minikube-app
     spec:
+      dnsPolicy: Default   # ✅ Use host DNS instead of cluster DNS
       containers:
       - name: minikube-app
         image: shakilahamed/minikube-app:latest
