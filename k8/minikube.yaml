@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: minikube-app
-        image: shakilmunavary/minikube-app:latest
+        image: shakilahamed/minikube-app:latest
         ports:
         - containerPort: 80   # app listens inside pod on 80
 ---
