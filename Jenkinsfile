@@ -1,22 +1,35 @@
 pipeline {
     agent any
 
-        environment {
-            IMAGE_NAME      = "shakilahamed/minikube-app"
-            IMAGE_TAG       = "latest"
-            DEPLOYMENT_NAME = "minikube-app"
-            KUBE_NAMESPACE  = "default"
-            KUBE_MANIFEST   = "k8/minikube.yaml"
-            KUBECONFIG_PATH = "/home/rba/minikube/config"
-            KUBE_CONTEXT    = "minikube"
-        }
-
+    environment {
+        IMAGE_NAME      = "shakilahamed/minikube-app"
+        IMAGE_TAG       = "latest"
+        DEPLOYMENT_NAME = "minikube-app"
+        SERVICE_NAME    = "minikube-app-service"
+        KUBE_NAMESPACE  = "default"
+        KUBE_MANIFEST   = "k8/minikube.yaml"
+        KUBECONFIG_PATH = "/home/rba/minikube/config"
+        KUBE_CONTEXT    = "minikube"
+    }
 
     stages {
         stage('Checkout') {
             steps {
                 git branch: 'main',
                     url: 'https://github.com/shakilmunavary/minikube-app.git'
+            }
+        }
+
+        stage('Cleanup Docker') {
+            steps {
+                script {
+                    echo "🧹 Cleaning up Docker environment..."
+                    sh '''
+                        docker rm -f $(docker ps -aq) || true
+                        docker rmi -f $(docker images -q) || true
+                        docker system prune -af || true
+                    '''
+                }
             }
         }
 
@@ -60,16 +73,20 @@ pipeline {
                     echo "🚀 Deploying to Minikube..."
                     sh """
                     export KUBECONFIG=${KUBECONFIG_PATH}
-                    kubectl config use-context minikube
+                    kubectl config use-context ${KUBE_CONTEXT}
 
-                    # Apply manifests
-                    kubectl apply -f ${KUBE_MANIFEST} --namespace=${KUBE_NAMESPACE}
+                    echo "Deleting old deployment and service..."
+                    kubectl delete deployment ${DEPLOYMENT_NAME} --ignore-not-found -n ${KUBE_NAMESPACE}
+                    kubectl delete svc ${SERVICE_NAME} --ignore-not-found -n ${KUBE_NAMESPACE}
 
-                    # Verify deployment rollout
+                    echo "Recreating deployment and service..."
+                    kubectl apply -f ${KUBE_MANIFEST} -n ${KUBE_NAMESPACE}
+
+                    echo "Waiting for rollout..."
                     kubectl rollout status deployment/${DEPLOYMENT_NAME} -n ${KUBE_NAMESPACE}
 
-                    # Show service info
-                    kubectl get svc -n ${KUBE_NAMESPACE}
+                    echo "Service info:"
+                    kubectl get svc ${SERVICE_NAME} -n ${KUBE_NAMESPACE}
                     """
                 }
             }
