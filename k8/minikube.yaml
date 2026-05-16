@@ -2,8 +2,6 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: minikube-app
-  labels:
-    app: minikube-app
 spec:
   replicas: 1
   selector:
@@ -18,7 +16,13 @@ spec:
       - name: minikube-app
         image: shakilahamed/minikube-app:latest
         ports:
-        - containerPort: 7000   # app listens inside pod on 80
+        - containerPort: 7000
+        env:
+        - name: GITHUB_TOKEN
+          valueFrom:
+            secretKeyRef:
+              name: github-secret
+              key: token
 ---
 apiVersion: v1
 kind: Service
@@ -29,6 +33,6 @@ spec:
   selector:
     app: minikube-app
   ports:
-    - port: 7000
-      targetPort: 7000
-      nodePort: 30080
+    - port: 7000        # Service port
+      targetPort: 7000  # Pod container port
+      nodePort: 30080   # External NodePort
