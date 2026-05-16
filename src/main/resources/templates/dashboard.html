@@ -53,7 +53,7 @@
                 link.addEventListener("click", function(e) {
                     e.preventDefault();
                     const repoName = this.getAttribute("data-repo");
-                    fetch(`/webapp/github/repo/details/${repoName}`)
+                    fetch(`/github/repo/details/${repoName}`)
                         .then(response => response.json())
                         .then(data => {
                             const detailsDiv = document.getElementById("repo-details");
@@ -62,9 +62,10 @@
                                 <table>
                                     <tr><th>Name</th><td>${data.name}</td></tr>
                                     <tr><th>Description</th><td>${data.description || ''}</td></tr>
-                                    <tr><th>Stars</th><td>${data.stars || 0}</td></tr>
-                                    <tr><th>Forks</th><td>${data.forks || 0}</td></tr>
+                                    <tr><th>Stars</th><td>${data.stargazers_count || 0}</td></tr>
+                                    <tr><th>Forks</th><td>${data.forks_count || 0}</td></tr>
                                     <tr><th>Language</th><td>${data.language || ''}</td></tr>
+                                    <tr><th>URL</th><td><a href="${data.html_url}" target="_blank">${data.html_url}</a></td></tr>
                                 </table>
                             `;
                         });
