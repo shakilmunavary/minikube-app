@@ -11,6 +11,8 @@
         form { margin-bottom: 20px; }
         input { padding: 5px; margin-right: 10px; }
         button { padding: 5px 10px; }
+        table { border-collapse: collapse; margin-top: 20px; }
+        th, td { border: 1px solid #ccc; padding: 8px; }
     </style>
 </head>
 <body>
@@ -19,7 +21,7 @@
     <!-- User Section -->
     <section>
         <h2>Users</h2>
-        <form th:action="@{/webapp/add}" method="post" th:object="${user}">
+        <form th:action="@{/add}" method="post" th:object="${user}">
             <input type="text" th:field="*{name}" placeholder="Enter user name"/>
             <input type="email" th:field="*{email}" placeholder="Enter user email"/>
             <button type="submit">Add User</button>
@@ -37,10 +39,38 @@
         <h2>GitHub Repositories</h2>
         <ul>
             <li th:each="repo : ${repos}">
-                <a th:href="@{/webapp/github/repo/view/{name}(name=${repo.name})}"
-                   th:text="${repo.name}"></a>
+                <a href="#" th:attr="data-repo=${repo.name}" th:text="${repo.name}" class="repo-link"></a>
             </li>
         </ul>
+
+        <!-- Repo details table placeholder -->
+        <div id="repo-details"></div>
     </section>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            document.querySelectorAll(".repo-link").forEach(function(link) {
+                link.addEventListener("click", function(e) {
+                    e.preventDefault();
+                    const repoName = this.getAttribute("data-repo");
+                    fetch(`/webapp/github/repo/details/${repoName}`)
+                        .then(response => response.json())
+                        .then(data => {
+                            const detailsDiv = document.getElementById("repo-details");
+                            detailsDiv.innerHTML = `
+                                <h3>Details for ${data.name}</h3>
+                                <table>
+                                    <tr><th>Name</th><td>${data.name}</td></tr>
+                                    <tr><th>Description</th><td>${data.description || ''}</td></tr>
+                                    <tr><th>Stars</th><td>${data.stars || 0}</td></tr>
+                                    <tr><th>Forks</th><td>${data.forks || 0}</td></tr>
+                                    <tr><th>Language</th><td>${data.language || ''}</td></tr>
+                                </table>
+                            `;
+                        });
+                });
+            });
+        });
+    </script>
 </body>
 </html>
