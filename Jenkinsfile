@@ -1,14 +1,16 @@
 pipeline {
     agent any
 
-    environment {
-        IMAGE_NAME      = "shakilahamed/minikube-app"
-        IMAGE_TAG       = "latest"
-        DEPLOYMENT_NAME = "minikube-app"
-        KUBE_NAMESPACE  = "default"
-        KUBE_MANIFEST   = "k8/minikube.yaml"
-        KUBECONFIG_PATH = "/home/jenkins/.kube/config" // Jenkins user must have kubeconfig
-    }
+        environment {
+            IMAGE_NAME      = "shakilahamed/minikube-app"
+            IMAGE_TAG       = "latest"
+            DEPLOYMENT_NAME = "minikube-app"
+            KUBE_NAMESPACE  = "default"
+            KUBE_MANIFEST   = "k8/minikube.yaml"
+            KUBECONFIG_PATH = "/home/rba/minikube/config"
+            KUBE_CONTEXT    = "minikube"
+        }
+
 
     stages {
         stage('Checkout') {
