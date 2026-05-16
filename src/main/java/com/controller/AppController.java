@@ -36,6 +36,15 @@ public class AppController {
         return "redirect:/webapp/dashboard"; // redirect back to unified view
     }
 
+    // GitHub repo details (HTML view)
+    @GetMapping("/github/repo/view/{repoName}")
+    public String showRepoHtml(@PathVariable("repoName") String repoName, Model model) {
+        GitHubRepo repo = gitHubService.getRepoByName(repoName);
+        model.addAttribute("repo", repo);
+        model.addAttribute("repoName", repoName);
+        return "github-repo-view"; // separate detail page
+    }
+
     // GitHub repo details (JSON)
     @ResponseBody
     @GetMapping("/github/repo/{repoName}")
