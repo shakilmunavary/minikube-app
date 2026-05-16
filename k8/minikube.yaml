@@ -31,4 +31,3 @@ spec:
   ports:
     - port: 7000        # external service port
       targetPort: 80    # forwards traffic to container port 80
-      nodePort: 7000    # fixed NodePort on VM
