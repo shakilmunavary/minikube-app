@@ -13,7 +13,7 @@ import java.util.List;
 @Service
 public class GitHubService {
 
-    @Value("${github.token}")
+    @Value("${github.token:}") // optional
     private String githubToken;
 
     @Value("${github.username}")
@@ -33,7 +33,7 @@ public class GitHubService {
             GitHubRepo[] repos = response.getBody();
             return repos != null ? Arrays.asList(repos) : Collections.emptyList();
         } catch (Exception e) {
-            System.err.println("❌ GitHub API call failed: " + e.getMessage());
+            e.printStackTrace();
             return Collections.emptyList();
         }
     }
@@ -48,7 +48,7 @@ public class GitHubService {
                 url, HttpMethod.GET, request, GitHubRepo.class);
             return response.getBody();
         } catch (Exception e) {
-            System.err.println("❌ GitHub API call failed for repo " + repoName + ": " + e.getMessage());
+            e.printStackTrace();
             GitHubRepo fallback = new GitHubRepo();
             fallback.setName(repoName);
             fallback.setDescription("Unable to fetch repository details");
