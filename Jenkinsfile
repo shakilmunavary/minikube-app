@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        IMAGE_NAME      = "shakilmunavary/minikube-app"
+        IMAGE_NAME      = "shakilahamed/minikube-app"
         IMAGE_TAG       = "latest"
         DEPLOYMENT_NAME = "minikube-app"
         KUBE_NAMESPACE  = "default"
