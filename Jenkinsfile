@@ -18,6 +18,15 @@ pipeline {
             }
         }
 
+        stage('Build App') {
+            steps {
+                script {
+                    echo "⚙️ Building Java app with Maven..."
+                    sh "mvn clean package -DskipTests"
+                }
+            }
+        }
+
         stage('Build Docker Image') {
             steps {
                 script {
