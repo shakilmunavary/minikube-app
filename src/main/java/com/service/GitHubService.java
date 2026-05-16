@@ -2,7 +2,6 @@ package com.service;
 
 import com.model.GitHubRepo;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -21,22 +20,16 @@ public class GitHubService {
     private String githubUsername;
 
     private final RestTemplate restTemplate = new RestTemplate();
-
     private static final String GITHUB_API_BASE = "https://api.github.com";
 
-    /**
-     * Get all public repositories for the configured user
-     */
     public List<GitHubRepo> getUserRepos() {
         String url = GITHUB_API_BASE + "/users/" + githubUsername + "/repos?type=public&sort=updated&per_page=100";
-        
         HttpHeaders headers = createHeaders();
         HttpEntity<Void> request = new HttpEntity<>(headers);
 
         try {
             ResponseEntity<GitHubRepo[]> response = restTemplate.exchange(
                 url, HttpMethod.GET, request, GitHubRepo[].class);
-            
             GitHubRepo[] repos = response.getBody();
             return repos != null ? Arrays.asList(repos) : Collections.emptyList();
         } catch (Exception e) {
@@ -45,12 +38,8 @@ public class GitHubService {
         }
     }
 
-    /**
-     * Get a specific repository by name
-     */
     public GitHubRepo getRepoByName(String repoName) {
         String url = GITHUB_API_BASE + "/repos/" + githubUsername + "/" + repoName;
-        
         HttpHeaders headers = createHeaders();
         HttpEntity<Void> request = new HttpEntity<>(headers);
 
@@ -65,15 +54,6 @@ public class GitHubService {
             fallback.setDescription("Unable to fetch repository details");
             return fallback;
         }
-    }
-
-    /**
-     * Get list of repository names (for simple listing)
-     */
-    public List<String> getRepoNames() {
-        return getUserRepos().stream()
-                .map(GitHubRepo::getName)
-                .toList();
     }
 
     private HttpHeaders createHeaders() {
