@@ -37,7 +37,7 @@ public class AppController {
     @PostMapping("/add")
     public String addUser(@ModelAttribute User user) {
         userRepository.save(user);
-        return "redirect:/dashboard"; // redirect back to unified view
+        return "redirect:/dashboard"; // context path auto-prepends /webapp
     }
 
     // GitHub repo details (JSON for inline table rendering)
