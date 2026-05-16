@@ -43,7 +43,6 @@
             </li>
         </ul>
 
-        <!-- Repo details table placeholder -->
         <div id="repo-details"></div>
     </section>
 
@@ -53,7 +52,7 @@
                 link.addEventListener("click", function(e) {
                     e.preventDefault();
                     const repoName = this.getAttribute("data-repo");
-                    fetch(`/github/repo/details/${repoName}`)
+                    fetch(`/github/repo/details/${repoName}`) // ✅ fixed URL
                         .then(response => response.json())
                         .then(data => {
                             const detailsDiv = document.getElementById("repo-details");
