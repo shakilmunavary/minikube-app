@@ -47,23 +47,26 @@ pipeline {
             }
         }
 
-                stage('Sonar Analysis') {
-                            steps {
-                                script {
-                                    echo "🔍 Running SonarQube Analysis..."
-                
-                                    // Using double quotes (""") lets Jenkins evaluate variables like ${SONAR_TOKEN}
-                                    sh """
-                                    mvn sonar:sonar \
-                                                          -Dsonar.projectKey=${SONAR_PROJECT_KEY} \
-                                                          -Dsonar.host.url=${SONAR_HOST} \
-                                                          -Dsonar.token=${SONAR_TOKEN} \
-                                                          -Dsonar.scanner.skipCertificateValidation=true \
-                                                          -Dsonar.ws.skipCertificateValidation=true
-                                    """
-                                }
+        stage('Sonar Analysis') {
+                    steps {
+                        script {
+                            echo "🔍 Running SonarQube Analysis (with Global JVM Hostname Bypass)..."
+                            
+                            // Passing -DwithEnv or setting MAVEN_OPTS forces the underlying Java OkHttpClient to ignore strict domains
+                            withEnv(["MAVEN_OPTS=-Djdk.internal.httpclient.disableHostnameVerification=true -Dcom.sun.net.ssl.checkRevocation=false"]) {
+                                sh """
+                                mvn sonar:sonar \
+                                  -Dsonar.projectKey=${SONAR_PROJECT_KEY} \
+                                  -Dsonar.host.url=${SONAR_HOST} \
+                                  -Dsonar.token=${SONAR_TOKEN} \
+                                  -Dsonar.scanner.skipCertificateValidation=true
+                                """
                             }
                         }
+                    }
+                }
+
+        
 
         stage('Build Docker Image') {
             steps {
