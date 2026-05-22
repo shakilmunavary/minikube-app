@@ -47,22 +47,23 @@ pipeline {
             }
         }
 
-        // ✅ ✅ NEW STAGE — SONAR ANALYSIS
-        stage('Sonar Analysis') {
-            steps {
-                script {
-                    echo "🔍 Running SonarQube Analysis..."
-
-                    sh '''
-                    mvn sonar:sonar \
-                      -Dsonar.projectKey=${SONAR_PROJECT_KEY} \
-                      -Dsonar.host.url=${SONAR_HOST} \
-                      -Dsonar.token=${SONAR_TOKEN} \
-                      -Dsonar.scanner.skipCertificateValidation=true
-                    '''
-                }
-            }
-        }
+                stage('Sonar Analysis') {
+                            steps {
+                                script {
+                                    echo "🔍 Running SonarQube Analysis..."
+                
+                                    // Using double quotes (""") lets Jenkins evaluate variables like ${SONAR_TOKEN}
+                                    sh """
+                                            mvn sonar:sonar \
+                                          -Dmaven.wagon.http.ssl.allowall=true \
+                                          -Dsonar.projectKey=${SONAR_PROJECT_KEY} \
+                                          -Dsonar.host.url=${SONAR_HOST} \
+                                          -Dsonar.token=${SONAR_TOKEN} \
+                                          -Dsonar.scanner.skipCertificateValidation=true
+                                    """
+                                }
+                            }
+                        }
 
         stage('Build Docker Image') {
             steps {
