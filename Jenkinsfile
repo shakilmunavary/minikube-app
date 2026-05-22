@@ -54,12 +54,12 @@ pipeline {
                 
                                     // Using double quotes (""") lets Jenkins evaluate variables like ${SONAR_TOKEN}
                                     sh """
-                                            mvn sonar:sonar \
-                                          -Dmaven.wagon.http.ssl.allowall=true \
-                                          -Dsonar.projectKey=${SONAR_PROJECT_KEY} \
-                                          -Dsonar.host.url=${SONAR_HOST} \
-                                          -Dsonar.token=${SONAR_TOKEN} \
-                                          -Dsonar.scanner.skipCertificateValidation=true
+                                    mvn sonar:sonar \
+                                                          -Dsonar.projectKey=${SONAR_PROJECT_KEY} \
+                                                          -Dsonar.host.url=${SONAR_HOST} \
+                                                          -Dsonar.token=${SONAR_TOKEN} \
+                                                          -Dsonar.scanner.skipCertificateValidation=true \
+                                                          -Dsonar.ws.skipCertificateValidation=true
                                     """
                                 }
                             }
