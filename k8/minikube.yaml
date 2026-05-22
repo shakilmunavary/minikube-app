@@ -31,7 +31,7 @@ spec:
           image: shakilahamed/minikube-app:latest
           imagePullPolicy: Always
           ports:
-            - containerPort: 8080
+            - containerPort: 7000
           env:
             - name: GITHUB_TOKEN
               valueFrom:
@@ -61,5 +61,5 @@ spec:
   ports:
     - protocol: TCP
       port: 80
-      targetPort: 8080
+      targetPort: 7000
   type: LoadBalancer
