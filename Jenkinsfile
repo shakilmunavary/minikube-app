@@ -12,7 +12,7 @@ pipeline {
         KUBE_CONTEXT    = "minikube"
 
         // ✅ Sonar Configuration (NO Jenkins global config required)
-        SONAR_HOST = "http://127.0.0.1/sonarqube"
+        SONAR_HOST = "http://127.0.0.1:9000/sonarqube"
         SONAR_PROJECT_KEY = "rba-test-project"
         SONAR_TOKEN = credentials('sonarqube_token')
     }
