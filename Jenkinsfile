@@ -8,9 +8,6 @@ pipeline {
         SERVICE_NAME    = "minikube-app-service"
         KUBE_NAMESPACE  = "default"
         KUBE_MANIFEST   = "k8/minikube.yaml"
-        KUBECONFIG_PATH = "/home/rba/minikube/config"
-        KUBE_CONTEXT    = "minikube"
-
         // ✅ Sonar Configuration (NO Jenkins global config required)
         SONAR_HOST = "http://127.0.0.1:9000/sonarqube"
         SONAR_PROJECT_KEY = "rba-test-project"
@@ -98,8 +95,7 @@ pipeline {
                 script {
                     echo "🚀 Deploying to Minikube..."
                     sh """
-                    export KUBECONFIG=${KUBECONFIG_PATH}
-                    kubectl config use-context ${KUBE_CONTEXT}
+                    aws eks update-kubeconfig --region us-west-2 --name devops-ai-eks
 
                     echo "Deleting old deployment and service..."
                     kubectl delete deployment ${DEPLOYMENT_NAME} --ignore-not-found -n ${KUBE_NAMESPACE}
