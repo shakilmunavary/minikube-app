@@ -10,6 +10,11 @@ pipeline {
         KUBE_MANIFEST   = "k8/minikube.yaml"
         KUBECONFIG_PATH = "/home/rba/minikube/config"
         KUBE_CONTEXT    = "minikube"
+
+        // ✅ Sonar Configuration (NO Jenkins global config required)
+        SONAR_HOST = "https://sop-testing-alb-2059918749.us-west-2.elb.amazonaws.com/sonarqube"
+        SONAR_PROJECT_KEY = "rba-test-project"
+        SONAR_TOKEN = credentials('sonar-token')
     }
 
     stages {
@@ -38,6 +43,22 @@ pipeline {
                 script {
                     echo "⚙️ Building Java app with Maven..."
                     sh "mvn clean package -DskipTests"
+                }
+            }
+        }
+
+        // ✅ ✅ NEW STAGE — SONAR ANALYSIS
+        stage('Sonar Analysis') {
+            steps {
+                script {
+                    echo "🔍 Running SonarQube Analysis..."
+
+                    sh '''
+                    mvn sonar:sonar \
+                      -Dsonar.projectKey=${SONAR_PROJECT_KEY} \
+                      -Dsonar.host.url=${SONAR_HOST} \
+                      -Dsonar.token=${SONAR_TOKEN}
+                    '''
                 }
             }
         }
@@ -90,6 +111,16 @@ pipeline {
                     """
                 }
             }
+        }
+    }
+
+    post {
+        success {
+            echo "✅ Pipeline completed successfully"
+        }
+
+        failure {
+            echo "❌ Pipeline failed"
         }
     }
 }
