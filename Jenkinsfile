@@ -4,9 +4,9 @@ pipeline {
     environment {
         IMAGE_NAME      = "shakilahamed/minikube-app"
         IMAGE_TAG       = "latest"
-        DEPLOYMENT_NAME = "minikube-app"
-        SERVICE_NAME    = "minikube-app-service"
-        KUBE_NAMESPACE  = "default"
+        DEPLOYMENT_NAME = "eks-ai-deployment"
+        SERVICE_NAME    = "eks-ai-service"
+        KUBE_NAMESPACE  = "eks-ai"
         KUBE_MANIFEST   = "k8/minikube.yaml"
         // ✅ Sonar Configuration (NO Jenkins global config required)
         SONAR_HOST = "http://127.0.0.1:9000/sonarqube"
