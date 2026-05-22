@@ -1,39 +1,65 @@
+# ----------------------------------------
+# Namespace
+# ----------------------------------------
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: eks-ai
+---
+# ----------------------------------------
+# Deployment
+# ----------------------------------------
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: minikube-app
+  name: eks-ai-deployment
+  namespace: eks-ai
+  labels:
+    app: eks-ai
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: minikube-app
+      app: eks-ai
   template:
     metadata:
       labels:
-        app: minikube-app
+        app: eks-ai
     spec:
-      dnsPolicy: Default   # ✅ Use host DNS instead of cluster DNS
       containers:
-      - name: minikube-app
-        image: shakilahamed/minikube-app:latest
-        ports:
-        - containerPort: 7000
-        env:
-        - name: GITHUB_TOKEN
-          valueFrom:
-            secretKeyRef:
-              name: github-secret
-              key: token
+        - name: eks-ai
+          image: shakilahamed/eks-ai-simple-java-user-app:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8080
+          env:
+            - name: GITHUB_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: github-secret
+                  key: GITHUB_TOKEN
+          resources:
+            requests:
+              memory: "512Mi"
+              cpu: "250m"
+            limits:
+              memory: "1Gi"
+              cpu: "500m"
+      restartPolicy: Always
 ---
+# ----------------------------------------
+# Service
+# ----------------------------------------
 apiVersion: v1
 kind: Service
 metadata:
-  name: minikube-app-service
+  name: eks-ai-service
+  namespace: eks-ai
 spec:
-  type: NodePort
   selector:
-    app: minikube-app
+    app: eks-ai
   ports:
-    - port: 7000        # Service port
-      targetPort: 7000  # Pod container port
-      nodePort: 30080   # External NodePort
+    - protocol: TCP
+      port: 80
+      targetPort: 8080
+  type: LoadBalancer
