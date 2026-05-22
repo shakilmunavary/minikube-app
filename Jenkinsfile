@@ -14,7 +14,7 @@ pipeline {
         // ✅ Sonar Configuration (NO Jenkins global config required)
         SONAR_HOST = "https://sop-testing-alb-2059918749.us-west-2.elb.amazonaws.com/sonarqube"
         SONAR_PROJECT_KEY = "rba-test-project"
-        SONAR_TOKEN = credentials('sonarqube-token')
+        SONAR_TOKEN = credentials('sonarqube_token')
     }
 
     stages {
